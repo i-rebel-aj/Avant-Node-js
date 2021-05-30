@@ -1,0 +1,16 @@
+{
+  "name": "day2",
+  "version": "1.0.0",
+  "description": "### What is node and npm : [Blog](https://medium.com/javascript-in-plain-english/what-is-node-js-5fe50e4332c8) - Node.js is a JavaScript runtime built on Chrome’s V8 JavaScript engine. - Node.js uses an event-driven, non-blocking I/O model that makes it lightweight and efficient. - Npm is the package mangaer for node.js you can install any package on your machine from the repository. - npx is node package execute, you can execute",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "colors": "^1.4.0",
+    "ejs": "^3.1.6",
+    "express": "^4.17.1"
+  }
+}
