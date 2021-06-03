@@ -1,5 +1,5 @@
 const mongoose=require('mongoose')
-mongoose.connect('mongodb+srv://akshay009:AkshayJain123@cluster0.oxb6t.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect('<URL>', { useNewUrlParser: true, useUnifiedTopology: true })
 .then(()=>{
     console.log('Connected To Database')
 }).catch((err)=>{

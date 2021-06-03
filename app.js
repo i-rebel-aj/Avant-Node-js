@@ -1,8 +1,10 @@
 //Video Streaming App
 const express=require('express')
 const app=express()
-const mongoose=require('mongoose')
+const mongoose=require('mongoose').set("debug", true)
 const dotenv=require('dotenv')
+const bcrypt=require("bcrypt")
+const {User}=require('./models/user')
 dotenv.config()
 //Database 
 mongoose.connect(process.env.DB_URL, { useNewUrlParser: true, useUnifiedTopology: true })
@@ -18,6 +20,7 @@ app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 
 //Routes
+const authRoutes=require('./routes/auth/auth')
 app.get('/',(req, res)=>{
     //res.send('Hello From Akswich')
     try{
@@ -33,12 +36,24 @@ app.get('/signup', (req, res)=>{
         console.log(err)
     }
 })
+
+app.use('/auth', authRoutes)
 app.post('/user', async (req, res)=>{
     try{
-        console.log(req.body)
+        const newUser={
+            email: req.body.email,
+            password: req.body.password
+        }
+        const salt=bcrypt.genSaltSync(10)
+        newUser.password= bcrypt.hashSync(newUser.password, salt)
+        const user=new User(newUser)
+        await user.save()
         res.redirect('/')
     }catch(err){
         console.log(err)
+        if(err.code===11000){
+            console.log('User Already Exists')
+        }
         res.redirect('/error')
     }
 })
@@ -46,16 +61,6 @@ app.get('*', (req, res)=>{
     res.send('Some Error')
 })
 
-// app.get('/user', (req, res)=>{
-//     res.send('User Details')
-// })
-// app.get('/user/:id', (req, res)=>{
-//     res.send('Usser By Id')
-// })
-// app.get('/video/:videoId', (req, res)=>{
-//     console.log(req.params)
-//     res.send(`This is some video by it\'s id ${req.params.videoId}`)
-// })
 app.listen(process.env.PORT, ()=>{
     console.log(`Server has started at port ${process.env.PORT}`)
 })
