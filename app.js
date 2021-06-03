@@ -18,7 +18,7 @@ mongoose.connect(process.env.DB_URL, { useNewUrlParser: true, useUnifiedTopology
 app.set("view engine", "ejs")
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
-
+app.use('/public', express.static('public'))
 //Routes
 const authRoutes=require('./routes/auth/auth')
 app.get('/',(req, res)=>{
