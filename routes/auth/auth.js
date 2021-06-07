@@ -1,6 +1,6 @@
 const express=require("express")
 const router=express.Router()
-const {renderLoginForm, loginUser}=require('../../controllers/auth/auth')
+const {renderLoginForm, loginUser, logout}=require('../../controllers/auth/auth')
 /*---------------------
     GET Routes
 ----------------------*/
@@ -8,6 +8,8 @@ const {renderLoginForm, loginUser}=require('../../controllers/auth/auth')
 //@DESC Displays Login Form
 //@ACCESS PUBLIC
 router.get('/login', renderLoginForm)
+//For Logout
+router.get('/logout', logout)
 /*---------------------
     POST Routes
 ----------------------*/

@@ -4,6 +4,9 @@ const app=express()
 const mongoose=require('mongoose').set("debug", true)
 const dotenv=require('dotenv')
 const bcrypt=require("bcrypt")
+const session=require('express-session')
+const cookieParser=require('cookie-parser')
+const flash=require('connect-flash')
 const {User}=require('./models/user')
 dotenv.config()
 //Database 
@@ -16,8 +19,28 @@ mongoose.connect(process.env.DB_URL, { useNewUrlParser: true, useUnifiedTopology
 })
 
 app.set("view engine", "ejs")
+//Middlewares
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
+app.use(cookieParser())
+app.use(flash())
+app.use(session({
+    resave: false,
+    saveUninitialized: false,
+    secret: process.env.sessionSecret
+}))
+//Custom middleware
+// ( ...arg, next() )=>{}
+app.use(function(req, res, next){
+    if(req.session.isLoggedIn){
+        res.locals.currentUser=req.session.user;
+    }else {
+        res.locals.currentUser = null;
+    }
+    res.locals.error = req.flash("error");
+    res.locals.success = req.flash("success");
+    next();
+})
 app.use('/public', express.static('public'))
 //Routes
 const authRoutes=require('./routes/auth/auth')
