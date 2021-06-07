@@ -36,6 +36,13 @@ app.get('/signup', (req, res)=>{
         console.log(err)
     }
 })
+app.get('/error', (req, res) => {
+    try {
+        res.render('error')    
+    } catch (error) {
+        console.error(error);
+    }
+})
 
 app.use('/auth', authRoutes)
 app.post('/user', async (req, res)=>{
