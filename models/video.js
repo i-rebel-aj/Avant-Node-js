@@ -16,7 +16,19 @@ const videoSchema=new mongoose.Schema({
     description:{
         type: String,
         required: true
+    },
+    likes:{
+        type: Number,
+        default: 0
+    },
+    unlikes:{
+        type: Number,
+        default: 0
+    },
+    creator:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
     }
 }, {timestamps: true})
-const video=mongoose.model('Video', videoSchema)
-module.exports={video}
+const Video=mongoose.model('Video', videoSchema)
+module.exports={Video}

@@ -38,4 +38,11 @@ const logout=async(req, res)=>{
         })
     }
 }
-module.exports={renderLoginForm, loginUser, logout}
+const renderSignUpPage=async(req, res)=>{
+    try{
+        res.render('signup')
+    }catch(err){
+        console.log(err)
+    }
+}
+module.exports={renderLoginForm, loginUser, logout, renderSignUpPage}

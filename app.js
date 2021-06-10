@@ -3,11 +3,9 @@ const express=require('express')
 const app=express()
 const mongoose=require('mongoose').set("debug", true)
 const dotenv=require('dotenv')
-const bcrypt=require("bcrypt")
 const session=require('express-session')
 const cookieParser=require('cookie-parser')
 const flash=require('connect-flash')
-const {User}=require('./models/user')
 dotenv.config()
 //Database 
 mongoose.connect(process.env.DB_URL, { useNewUrlParser: true, useUnifiedTopology: true })
@@ -43,22 +41,15 @@ app.use(function(req, res, next){
 })
 app.use('/public', express.static('public'))
 //Routes
-const authRoutes=require('./routes/auth/auth')
-app.get('/',(req, res)=>{
-    //res.send('Hello From Akswich')
-    try{
-        res.render('./landing/home')
-    }catch(err){
-        console.log(err)
-    }   
-})
-app.get('/signup', (req, res)=>{
-    try{
-        res.render('signup')
-    }catch(err){
-        console.log(err)
-    }
-})
+const authRoutes=require('./routes/auth')
+const userRoutes=require('./routes/user')
+const videoRoutes=require('./routes/video')
+const landingRoutes=require('./routes/landing')
+app.get('/',landingRoutes)
+app.use('/auth', authRoutes)
+app.use('/user', userRoutes)
+app.use('/video', videoRoutes)
+
 app.get('/error', (req, res) => {
     try {
         res.render('error')    
@@ -67,26 +58,6 @@ app.get('/error', (req, res) => {
     }
 })
 
-app.use('/auth', authRoutes)
-app.post('/user', async (req, res)=>{
-    try{
-        const newUser={
-            email: req.body.email,
-            password: req.body.password
-        }
-        const salt=bcrypt.genSaltSync(10)
-        newUser.password= bcrypt.hashSync(newUser.password, salt)
-        const user=new User(newUser)
-        await user.save()
-        res.redirect('/')
-    }catch(err){
-        console.log(err)
-        if(err.code===11000){
-            console.log('User Already Exists')
-        }
-        res.redirect('/error')
-    }
-})
 app.get('*', (req, res)=>{
     res.send('Some Error')
 })

@@ -1,6 +1,6 @@
 const express=require("express")
 const router=express.Router()
-const {renderLoginForm, loginUser, logout}=require('../../controllers/auth/auth')
+const {renderLoginForm, loginUser, logout,renderSignUpPage }=require('../controllers/auth/auth')
 /*---------------------
     GET Routes
 ----------------------*/
@@ -10,6 +10,7 @@ const {renderLoginForm, loginUser, logout}=require('../../controllers/auth/auth'
 router.get('/login', renderLoginForm)
 //For Logout
 router.get('/logout', logout)
+router.get('/signup', renderSignUpPage)
 /*---------------------
     POST Routes
 ----------------------*/
