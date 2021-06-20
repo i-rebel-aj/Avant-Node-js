@@ -6,12 +6,18 @@
         <% for(video of videos){%>
                 <div class="col">
                     <div class="card" style="width: 18rem;">
-                        <img src="https://th.bing.com/th/id/R9f71bd4b86d0f5ffd12b5394888a0547?rik=x7oK90uZLYOR8g&riu=http%3a%2f%2fwww.modern-notoriety.com%2fwp-content%2fuploads%2f2019%2f03%2fcoa.jpg&ehk=QFYV2c3aHMK5v9zzY0Wr3D8sVa15NUpCX8yzezePeFY%3d&risl=&pid=ImgRaw" class="card-img-top" alt="...">
+                        <video height="240" controls>
+                          <source src="/<%= video?.filePath %> " type="video/mp4">
+                        </video>
                         <div class="card-body">
                           <h4 class="card-title"><%= video.title %> </h4>
                           <h6 class="card-title">Created By: <%= video?.creator?.name %> </h6>
                           <p class="card-text"><%= video.description %> </p>
-                          <a href="#" class="btn btn-outline-success">Like</a>
+                          <!--Logic-->
+                          <form action="/video/<%= video._id %>/like" method="POST">
+                            <button type="submit" class="btn btn-outline-success">Like</button>
+                          </form>
+                          <!-- <a href="#" class="btn btn-outline-success">Like</a> -->
                           <a href="#" class="btn btn-outline-warning">Unlike</a>
                         </div>
                       </div>

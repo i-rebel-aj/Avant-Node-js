@@ -1,5 +1,6 @@
 //Video Controller Goes here
 const {Video}=require('../../models/video')
+//WA-<>-<12> 
 
 //To Upload Video
 const uploadVideo=async(req, res)=>{
@@ -10,8 +11,12 @@ const uploadVideo=async(req, res)=>{
         const newVideo={
             title: videoName,
             description: videoDescription,
-            creator: req.session.user._id
+            creator: req.session.user._id,
+            filePath: req.file.path,
+            fileType: req.file.mimetype
         }
+        console.log(req.body)
+        console.log(req.file)
         //Do some more stuff
         const newUploadedVideo=new Video(newVideo)
         await newUploadedVideo.save()
@@ -20,7 +25,52 @@ const uploadVideo=async(req, res)=>{
     }catch(err){
         req.flash("error", `Something went wrong ${err.message}`)
         console.log(err)
+        //To Remove from filesystem ( fs ) 
         res.redirect('/error')
+    }
+}
+
+//Like
+const likeVideo=async (req, res)=>{
+    try{
+        const videoId=req.params.id
+        const foundVideo=await Video.findById(videoId)
+        console.log(foundVideo)
+        let isLiked=false, isUnliked=false
+        for (const user of foundVideo.likeUnlikeBy) {
+            if(req.session.user._id.toString()===user.id){
+                if(user.status==='LIKE'){
+                    isLiked=true
+                }else if(user.status==='UNLIKE'){
+                    isUnliked=true
+                }                
+            }
+        }
+        if(isLiked){
+            throw new Error('Video is already Liked')
+        }else{
+            foundVideo.likes++
+            if(isUnliked){
+                foundVideo.unlikes--
+                for (const user of foundVideo.likeUnlikeBy) {
+                    if(req.session.user._id.toString()===user.id){
+                        user.status='LIKE' 
+                        break           
+                    }
+                }
+                await foundVideo.save()
+            }else{
+                let userStat={
+                    id: req.session.user._id.toString(),
+                    status: 'LIKE'
+                }
+                foundVideo.likeUnlikeBy.push(userStat)
+                await foundVideo.save()
+            }
+        }
+        res.redirect('/')
+    }catch(err){
+        console.log(err)
     }
 }
 
@@ -38,7 +88,7 @@ const renderUploadVideoForm= async(req, res)=>{
 const displayAllVideosHome=async(req, res)=>{
     try{
         const foundVideos=await Video.find({}).populate('creator', 'name email')
-        console.log(foundVideos)
+        //console.log(foundVideos)
         res.render('./landing/home', {videos:foundVideos})
     }catch(err){
         console.log(err)
@@ -47,7 +97,7 @@ const displayAllVideosHome=async(req, res)=>{
 
 
 
-module.exports={uploadVideo, renderUploadVideoForm, displayAllVideosHome}
+module.exports={uploadVideo, renderUploadVideoForm, displayAllVideosHome, likeVideo}
 
 
 // Coalescing Operator 
